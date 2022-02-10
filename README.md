@@ -16,7 +16,8 @@ Mainly used as a helping tool for developing a low-level MATLAB robotic manipula
 1. Open a new terminal and navigate to your ROS Noetic workspace
 2. Run `source devel/setup.bash` from the ROS Noetic workspace (this must be repeated whenever opening a new terminal, could add to `~/.bashrc` for convenience)
 3. Launch Gazebo: `roslaunch open_manipulator_gazebo open_manipulator_gazebo.launch`
-4. Run a ROS node from this (`open_manipulator_tenaci`) package, for example: `rosrun open_manipulator_tenaci static_servo_angle_publisher.py` where `static_servo_angle_publisher.py` should be replaced with the desired ROS node
+4. Start Gazebo using the play button (see [docs](http://gazebosim.org/tutorials?tut=guided_b2&cat=) for more info)
+5. Run a ROS node from this (`open_manipulator_tenaci`) package, for example: `rosrun open_manipulator_tenaci static_servo_angle_publisher.py` where `static_servo_angle_publisher.py` should be replaced with the desired ROS node
 
 ## Development
 
