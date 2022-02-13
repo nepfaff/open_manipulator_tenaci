@@ -10,10 +10,10 @@ from open_manipulator_tenaci.dh import tf_from_dh
 def main():
     # Change these (send to robot)
     # All angles are in radians
-    joint1_angle = 0
-    joint2_angle = 0
+    joint1_angle = np.pi
+    joint2_angle = -1.717
     joint3_angle = 0
-    joint4_angle = 0
+    joint4_angle = -1.424
 
     gripper_angle = 0.05
     gripper_sub_angle = 0.0
@@ -48,11 +48,11 @@ def main():
 
     while not rospy.is_shutdown():
         # Compute forward kinematics
-        T01 = tf_from_dh(0, 0, 0, joint1_angle - np.pi / 2.0)
+        T01 = tf_from_dh(0, 0, 0, joint1_angle + np.pi / 2.0)
         T12 = tf_from_dh(0.0, 0, 0.077, 0)
-        T23 = tf_from_dh(np.pi / 2.0, 0.0, 0.0, joint2_angle + np.pi / 2.0 + 0.1853)
-        T34 = tf_from_dh(0, 0.13, 0, joint3_angle + np.pi / 2.0 - 0.1853)
-        T45 = tf_from_dh(0, 0.124, 0, joint4_angle)
+        T23 = tf_from_dh(np.pi / 2.0, 0.0, 0.0, -joint2_angle + np.pi / 2.0 - 0.1853)
+        T34 = tf_from_dh(0, 0.13, 0, -joint3_angle - np.pi / 2.0 + 0.1853)
+        T45 = tf_from_dh(0, 0.124, 0, -joint4_angle)
         T5G = tf_from_dh(0, 0.126, 0, 0)
         tool_pose = T01 @ T12 @ T23 @ T34 @ T45 @ T5G @ np.array([0, 0, 0, 1])
 
