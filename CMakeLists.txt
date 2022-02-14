@@ -208,3 +208,6 @@ include_directories(
 catkin_install_python(PROGRAMS scripts/static_servo_angle_publisher.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
+catkin_install_python(PROGRAMS scripts/static_tool_pose_follower.py
+  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
