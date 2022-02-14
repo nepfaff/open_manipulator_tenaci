@@ -1,5 +1,7 @@
 from dataclasses import dataclass
 
+import numpy as np
+
 
 @dataclass
 class JointAngles:
@@ -25,3 +27,19 @@ class ToolPose:
     y: float
     z: float
     theta: float
+
+
+def do_joint_angles_violate_joint_limits(joint_angles: JointAngles) -> bool:
+    if joint_angles.joint1_angle > np.pi or joint_angles.joint1_angle < -np.pi:
+        return True
+
+    if joint_angles.joint2_angle > 1.67 or joint_angles.joint2_angle < -2.05:
+        return True
+
+    if joint_angles.joint3_angle > 1.53 or joint_angles.joint3_angle < -1.67:
+        return True
+
+    if joint_angles.joint4_angle > 2.0 or joint_angles.joint4_angle < -1.8:
+        return True
+
+    return False

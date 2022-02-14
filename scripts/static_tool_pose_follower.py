@@ -1,11 +1,16 @@
 #!/usr/bin/env python
+from typing import List
 
 import rospy
 from std_msgs.msg import Float64
 import numpy as np
 
 from open_manipulator_tenaci.inverse_kinematics import analytical_inverse_kinematics
-from open_manipulator_tenaci.kinematics_common import JointAngles, ToolPose
+from open_manipulator_tenaci.kinematics_common import (
+    JointAngles,
+    ToolPose,
+    do_joint_angles_violate_joint_limits,
+)
 from open_manipulator_tenaci.forward_kinematics import forward_kinematics
 
 
@@ -45,8 +50,13 @@ def main():
         ik_solutions = analytical_inverse_kinematics(tool_pose)
 
         # Choose one of the possible solutions
-        # TODO: Choose based on joint limits
-        ik_solution = ik_solutions[1]
+        valid_ik_sols: List[JointAngles] = []
+        for sol in ik_solutions:
+            if not do_joint_angles_violate_joint_limits(sol):
+                valid_ik_sols.append(sol)
+
+        print(f"Found {len(valid_ik_sols)} valid IK solutions")
+        ik_solution = valid_ik_sols[0]
 
         # Print joint and tool pose
         forward_kinematics(ik_solution, True)
