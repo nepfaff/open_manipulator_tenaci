@@ -31,6 +31,9 @@ class ToolPose:
 
 
 def do_joint_angles_violate_joint_limits(joint_angles: JointAngles) -> bool:
+    # Source for joint angle limits:
+    # https://github.com/ROBOTIS-GIT/open_manipulator/blob/be2859a0506b4e941a19435c0a07562b41768a27/open_manipulator_libs/src/OpenManipulator.cpp#L34-L73
+    
     if joint_angles.joint1_angle > np.pi or joint_angles.joint1_angle < -np.pi:
         return True
 
