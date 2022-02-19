@@ -12,6 +12,7 @@ from open_manipulator_tenaci.path_planning import (
     Waypoint,
     compute_waypoints_for_task_2a,
     compute_waypoints_for_task_2b,
+    compute_waypoints_for_task_2c,
 )
 
 
@@ -35,14 +36,21 @@ def main():
     #     *compute_waypoints_for_task_2a(start_locations, finish_locations),
     # ]
 
-    cube_locations = [
-        # (0, 0.21, "front"),
-        # (0, 0.21, "back"),
-        (0, 0.21, "down")
-    ]
+    # cube_locations = [
+    #     (0, 0.21, "front"),
+    #     # (0, 0.21, "back"),
+    #     (0, 0.21, "down"),
+    # ]
+    # waypoints: List[Waypoint] = [
+    #     start_pose,
+    #     *compute_waypoints_for_task_2b(cube_locations),
+    # ]
+
+    start_locations = [(0, 0.21, "front"), (0, 0.21, "back"), (0, 0.21, "down")]
+    finish_locations = [(-0.20, 0.0), (-0.05, 0.175), (0.0, 0.2)]
     waypoints: List[Waypoint] = [
         start_pose,
-        *compute_waypoints_for_task_2b(cube_locations),
+        *compute_waypoints_for_task_2c(start_locations, finish_locations),
     ]
 
     rospy.init_node("waypoint_follower")

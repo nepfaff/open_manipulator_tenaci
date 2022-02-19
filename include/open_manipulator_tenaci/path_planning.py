@@ -27,6 +27,205 @@ class Waypoint:
     gripper: float
 
 
+def waypoints_for_moving_between_start_finish(
+    x_start: float,
+    y_start: float,
+    x_finish: float,
+    y_finish: float,
+    gripper_z_pick_up_cube: float = GRIPPER_Z_PICK_UP_CUBE,
+    gripper_z_above_cube: float = GRIPPER_Z_ABOVE_CUBE,
+) -> List[Waypoint]:
+    """
+    Waypoints for picking up a cube at the start location and
+    placing it down at the finish location.
+
+    :param gripper_z_pick_up_cube: Custom z-postion for gripping
+        cubes while placing them down. Not used for picking up cubes.
+    :param gripper_z_above_cube: Custom z-postion for save gripper
+        position above cubes while placing them down. Not used for
+        picking up cubes.
+    """
+
+    waypoints = []
+
+    # Move to start location
+    waypoints.append(
+        Waypoint(
+            x_start, y_start, GRIPPER_Z_ABOVE_CUBE, -np.pi / 2.0, GRIPPER_OPENING_OPEN
+        )
+    )
+
+    # Grab cube
+    waypoints.append(
+        Waypoint(
+            x_start, y_start, GRIPPER_Z_PICK_UP_CUBE, -np.pi / 2.0, GRIPPER_OPENING_CUBE
+        )
+    )
+
+    # Pick up cube
+    waypoints.append(
+        Waypoint(
+            x_start, y_start, GRIPPER_Z_ABOVE_CUBE, -np.pi / 2.0, GRIPPER_OPENING_CUBE
+        )
+    )
+
+    # Move to finish location
+    waypoints.append(
+        Waypoint(
+            x_finish, y_finish, gripper_z_above_cube, -np.pi / 2.0, GRIPPER_OPENING_CUBE
+        )
+    )
+
+    # Place down cube
+    waypoints.append(
+        Waypoint(
+            x_finish,
+            y_finish,
+            gripper_z_pick_up_cube,
+            -np.pi / 2.0,
+            GRIPPER_OPENING_OPEN,
+        )
+    )
+
+    # Move gripper up
+    waypoints.append(
+        Waypoint(
+            x_finish, y_finish, gripper_z_above_cube, -np.pi / 2.0, GRIPPER_OPENING_OPEN
+        )
+    )
+
+    return waypoints
+
+
+def waypoints_for_pick_facing_down_place_facing_straight(
+    x_start: float,
+    y_start: float,
+    x_finish: float,
+    y_finish: float,
+    gripper_z_pick_up_cube: float = GRIPPER_Z_PICK_UP_CUBE,
+    gripper_z_above_cube: float = GRIPPER_Z_ABOVE_CUBE,
+) -> List[Waypoint]:
+    """
+    Waypoints for picking up a cube with the gripper facing down
+    and placing it down with the gripper facing straight.
+
+    :param gripper_z_pick_up_cube: Custom z-postion for gripping
+        cubes while placing them down. Not used for picking up cubes.
+    :param gripper_z_above_cube: Custom z-postion for save gripper
+        position above cubes while placing them down. Not used for
+        picking up cubes.
+    """
+
+    waypoints = []
+
+    # Move to cube location
+    waypoints.append(
+        Waypoint(
+            x_start, y_start, GRIPPER_Z_ABOVE_CUBE, -np.pi / 2.0, GRIPPER_OPENING_OPEN
+        )
+    )
+
+    # Grab cube
+    waypoints.append(
+        Waypoint(
+            x_start, y_start, GRIPPER_Z_PICK_UP_CUBE, -np.pi / 2.0, GRIPPER_OPENING_CUBE
+        )
+    )
+
+    # Pick up cube
+    waypoints.append(
+        Waypoint(
+            x_start, y_start, GRIPPER_Z_ABOVE_CUBE, -np.pi / 2.0, GRIPPER_OPENING_CUBE
+        )
+    )
+
+    # Bring gripper to save height to prevent touching floor when executing next waypoint
+    # NOTE: Not sure if this always works => Test with all possible cube locations
+    waypoints.append(
+        Waypoint(x_finish, y_finish, 0.25, np.pi / 3.0, GRIPPER_OPENING_CUBE)
+    )
+
+    # Rotate gripper and move to finish location
+    waypoints.append(
+        Waypoint(x_finish, y_finish, gripper_z_above_cube, 0.0, GRIPPER_OPENING_CUBE)
+    )
+
+    # Place down cube
+    waypoints.append(
+        Waypoint(x_finish, y_finish, gripper_z_pick_up_cube, 0.0, GRIPPER_OPENING_OPEN)
+    )
+
+    # Move gripper up
+    waypoints.append(
+        Waypoint(x_finish, y_finish, gripper_z_above_cube, 0.0, GRIPPER_OPENING_OPEN)
+    )
+
+    return waypoints
+
+
+def waypoints_for_pick_facing_straight_place_facing_down(
+    x_start: float,
+    y_start: float,
+    x_finish: float,
+    y_finish: float,
+    gripper_z_pick_up_cube: float = GRIPPER_Z_PICK_UP_CUBE,
+    gripper_z_above_cube: float = GRIPPER_Z_ABOVE_CUBE,
+) -> List[Waypoint]:
+    """
+    Waypoints for picking up a cube with the gripper facing straight
+    and placing it down with the gripperfacing down.
+
+    :param gripper_z_pick_up_cube: Custom z-postion for gripping
+        cubes while placing them down. Not used for picking up cubes.
+    :param gripper_z_above_cube: Custom z-postion for save gripper
+        position above cubes while placing them down. Not used for
+        picking up cubes.
+    """
+
+    waypoints = []
+
+    # Move to cube location
+    waypoints.append(
+        Waypoint(x_start, y_start, GRIPPER_Z_ABOVE_CUBE, 0.0, GRIPPER_OPENING_OPEN)
+    )
+
+    # Grab cube
+    waypoints.append(
+        Waypoint(x_start, y_start, GRIPPER_Z_PICK_UP_CUBE, 0.0, GRIPPER_OPENING_CUBE)
+    )
+
+    # Pick up cube
+    # Big z-position to prevent tuching the floor during rotation
+    waypoints.append(Waypoint(x_start, y_start, 0.2, 0.0, GRIPPER_OPENING_CUBE))
+
+    # Rotate gripper and move to finish location
+    waypoints.append(
+        Waypoint(
+            x_finish, y_finish, gripper_z_above_cube, -np.pi / 2.0, GRIPPER_OPENING_CUBE
+        )
+    )
+
+    # Place down cube
+    waypoints.append(
+        Waypoint(
+            x_finish,
+            y_finish,
+            gripper_z_pick_up_cube,
+            -np.pi / 2.0,
+            GRIPPER_OPENING_OPEN,
+        )
+    )
+
+    # Move gripper up
+    waypoints.append(
+        Waypoint(
+            x_finish, y_finish, gripper_z_above_cube, -np.pi / 2.0, GRIPPER_OPENING_OPEN
+        )
+    )
+
+    return waypoints
+
+
 def compute_waypoints_for_task_2a(
     starting_locations: List[Tuple[float, float]],
     finishing_locations: List[Tuple[float, float]],
@@ -47,157 +246,11 @@ def compute_waypoints_for_task_2a(
         x_start, y_start = start
         x_finish, y_finish = finish
 
-        # Move to start location
-        waypoints.append(
-            Waypoint(
-                x_start,
-                y_start,
-                GRIPPER_Z_ABOVE_CUBE,
-                -np.pi / 2.0,
-                GRIPPER_OPENING_OPEN,
+        waypoints.extend(
+            waypoints_for_moving_between_start_finish(
+                x_start, y_start, x_finish, y_finish
             )
         )
-
-        # Grab cube
-        waypoints.append(
-            Waypoint(
-                x_start,
-                y_start,
-                GRIPPER_Z_PICK_UP_CUBE,
-                -np.pi / 2.0,
-                GRIPPER_OPENING_CUBE,
-            )
-        )
-
-        # Pick up cube
-        waypoints.append(
-            Waypoint(
-                x_start,
-                y_start,
-                GRIPPER_Z_ABOVE_CUBE,
-                -np.pi / 2.0,
-                GRIPPER_OPENING_CUBE,
-            )
-        )
-
-        # Move to finish location
-        waypoints.append(
-            Waypoint(
-                x_finish,
-                y_finish,
-                GRIPPER_Z_ABOVE_CUBE,
-                -np.pi / 2.0,
-                GRIPPER_OPENING_CUBE,
-            )
-        )
-
-        # Place down cube
-        waypoints.append(
-            Waypoint(
-                x_finish,
-                y_finish,
-                GRIPPER_Z_PICK_UP_CUBE,
-                -np.pi / 2.0,
-                GRIPPER_OPENING_OPEN,
-            )
-        )
-
-        # Move gripper up
-        waypoints.append(
-            Waypoint(
-                x_finish,
-                y_finish,
-                GRIPPER_Z_ABOVE_CUBE,
-                -np.pi / 2.0,
-                GRIPPER_OPENING_OPEN,
-            )
-        )
-
-    return waypoints
-
-
-def waypoints_for_pick_facing_down_place_facing_straight(
-    x: float, y: float
-) -> List[Waypoint]:
-    """
-    Waypoints for picking up a cube with the gripper facing down
-    and placing it back down at the same location with the gripper
-    facing straight.
-
-    :param x: X coordinate of the cube.
-    :param y: Y coordinate of the cube.
-    """
-
-    waypoints = []
-
-    # Move to cube location
-    waypoints.append(
-        Waypoint(x, y, GRIPPER_Z_ABOVE_CUBE, -np.pi / 2.0, GRIPPER_OPENING_OPEN)
-    )
-
-    # Grab cube
-    waypoints.append(
-        Waypoint(x, y, GRIPPER_Z_PICK_UP_CUBE, -np.pi / 2.0, GRIPPER_OPENING_CUBE)
-    )
-
-    # Pick up cube
-    waypoints.append(
-        Waypoint(x, y, GRIPPER_Z_PICK_UP_CUBE, -np.pi / 2.0, GRIPPER_OPENING_CUBE)
-    )
-
-    # Bring gripper to save height to prevent touching floor when executing next waypoint
-    # NOTE: Not sure if this always works => Test with all possible cube locations
-    waypoints.append(Waypoint(x, y, 0.25, np.pi / 3.0, GRIPPER_OPENING_CUBE))
-
-    # Rotate gripper and move back to cube location
-    waypoints.append(Waypoint(x, y, GRIPPER_Z_ABOVE_CUBE, 0.0, GRIPPER_OPENING_CUBE))
-
-    # Place down cube
-    waypoints.append(Waypoint(x, y, GRIPPER_Z_PICK_UP_CUBE, 0.0, GRIPPER_OPENING_OPEN))
-
-    # Move gripper up
-    waypoints.append(Waypoint(x, y, GRIPPER_Z_ABOVE_CUBE, 0.0, GRIPPER_OPENING_OPEN))
-
-    return waypoints
-
-
-def waypoints_for_pick_facing_straight_place_facing_down(
-    x: float, y: float
-) -> List[Waypoint]:
-    """
-    Waypoints for picking up a cube with the gripper facing straight
-    and placing it back down at the same location with the gripper
-    facing down.
-
-    :param x: X coordinate of the cube.
-    :param y: Y coordinate of the cube.
-    """
-    waypoints = []
-
-    # Move to cube location
-    waypoints.append(Waypoint(x, y, GRIPPER_Z_ABOVE_CUBE, 0.0, GRIPPER_OPENING_OPEN))
-
-    # Grab cube
-    waypoints.append(Waypoint(x, y, GRIPPER_Z_PICK_UP_CUBE, 0.0, GRIPPER_OPENING_CUBE))
-
-    # Pick up cube
-    # Big z-position to prevent tuching the floor during rotation
-    waypoints.append(Waypoint(x, y, 0.2, 0.0, GRIPPER_OPENING_CUBE))
-
-    # Rotate gripper and move back to cube location
-    waypoints.append(
-        Waypoint(x, y, GRIPPER_Z_ABOVE_CUBE, -np.pi / 2.0, GRIPPER_OPENING_CUBE)
-    )
-
-    # Place down cube
-    waypoints.append(
-        Waypoint(x, y, GRIPPER_Z_PICK_UP_CUBE, -np.pi / 2.0, GRIPPER_OPENING_OPEN)
-    )
-
-    # Move gripper up
-    waypoints.append(
-        Waypoint(x, y, GRIPPER_Z_ABOVE_CUBE, -np.pi / 2.0, GRIPPER_OPENING_OPEN)
-    )
 
     return waypoints
 
@@ -222,19 +275,117 @@ def compute_waypoints_for_task_2b(
     # The current approach does not consider intermediate poses between waypoints
     # which leads to collisions with the floor
 
+    waypoints = []
+
     for location in cube_locations:
         x, y, direction = location
 
         if direction == "front":
-            waypoints = waypoints_for_pick_facing_down_place_facing_straight(x, y)
+            waypoints.extend(
+                waypoints_for_pick_facing_down_place_facing_straight(x, y, x, y)
+            )
         elif direction == "back":
-            waypoints = waypoints_for_pick_facing_straight_place_facing_down(x, y)
+            waypoints.extend(
+                waypoints_for_pick_facing_straight_place_facing_down(x, y, x, y)
+            )
         elif direction == "down":
-            waypoints = [
-                *waypoints_for_pick_facing_down_place_facing_straight(x, y),
-                *waypoints_for_pick_facing_down_place_facing_straight(x, y),
-            ]
+            waypoints.extend(
+                [
+                    *waypoints_for_pick_facing_down_place_facing_straight(x, y, x, y),
+                    *waypoints_for_pick_facing_down_place_facing_straight(x, y, x, y),
+                ]
+            )
         else:
             assert False, f"Direction is invalid: {direction}"
+
+    return waypoints
+
+
+def compute_waypoints_for_task_2c(
+    starting_locations: List[Tuple[float, float, str]],
+    finishing_locations: List[Tuple[float, float]],
+) -> List[Waypoint]:
+    """
+    Computes a sequence of waypoints to achieve task 2c.
+
+    The task involves picking up cubes from three starting locations,
+    potentially rotating them and stacking them on one of the finishing
+    locations.
+
+    :param starting_locations: A list of (x,y, direction). Direction is
+        one of "front", "back", or "down".
+    :param finishing_locations: A list of (x, y) coordinates.
+    :return: A list of waypoints.
+    """
+    # TODO: Improve by stacking cubes with gripper orientation = 0.
+    # This would likely improve reach.
+    # Another option is to pick a starting position that guarantees
+    # the current algorithm to work. However, must check if this is
+    # always possible.
+
+    waypoints = []
+
+    # Choose one of the finishing locations
+    x_finish, y_finish = finishing_locations[0]
+
+    # Keep track of where to place next cube on stack
+    next_gripper_z_pickup_cube = GRIPPER_Z_PICK_UP_CUBE
+    next_gripper_z_above_cube = GRIPPER_Z_ABOVE_CUBE
+
+    for start in starting_locations:
+        x_start, y_start, direction = start
+
+        if direction == "front":
+            # No rotation required
+            waypoints.extend(
+                waypoints_for_moving_between_start_finish(
+                    x_start,
+                    y_start,
+                    x_finish,
+                    y_finish,
+                    next_gripper_z_pickup_cube,
+                    next_gripper_z_above_cube,
+                )
+            )
+        elif direction == "back":
+            # Rotate on and place back down at start location
+            waypoints.extend(
+                waypoints_for_pick_facing_down_place_facing_straight(
+                    x_start,
+                    y_start,
+                    x_start,
+                    y_start,
+                    next_gripper_z_pickup_cube,
+                    next_gripper_z_above_cube,
+                )
+            )
+
+            # Rotate again and move to finish location
+            waypoints.extend(
+                waypoints_for_pick_facing_down_place_facing_straight(
+                    x_start,
+                    y_start,
+                    x_finish,
+                    y_finish,
+                    next_gripper_z_pickup_cube,
+                    next_gripper_z_above_cube,
+                )
+            )
+        elif direction == "down":
+            waypoints.extend(
+                waypoints_for_pick_facing_down_place_facing_straight(
+                    x_start,
+                    y_start,
+                    x_finish,
+                    y_finish,
+                    next_gripper_z_pickup_cube,
+                    next_gripper_z_above_cube,
+                )
+            )
+        else:
+            assert False, f"Direction is invalid: {direction}"
+
+        next_gripper_z_pickup_cube += GRIPPER_Z_PICK_UP_CUBE
+        next_gripper_z_above_cube += GRIPPER_Z_PICK_UP_CUBE
 
     return waypoints
