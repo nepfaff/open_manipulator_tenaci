@@ -32,3 +32,5 @@ Mainly used as a helping tool for developing a low-level MATLAB robotic manipula
   - Publishes static angles in radians for each of the 5 servos to the relevant Gazebo topics. Also prints the corresponding tool pose using forward kinematics. Changing the published angles requires modifying the source code.
 - `static_tool_pose_follower.py`
   - Publishes joint angles corresponding to a static pose. Uses analytical inverse kinematics. Also prints the corresponding tool pose using forward kinematics. Changing the pose requires modifying the source code.
+- `waypoint_follower.py`
+  - Follows a static sequence of waypoints. Changing the waypoints requires changing the source code.

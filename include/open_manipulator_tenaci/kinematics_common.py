@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import List, Optional
 
 import numpy as np
 
@@ -43,3 +44,14 @@ def do_joint_angles_violate_joint_limits(joint_angles: JointAngles) -> bool:
         return True
 
     return False
+
+
+def get_first_valid_joint_angles(
+    joint_angles: List[JointAngles]
+) -> Optional[JointAngles]:
+    for angles in joint_angles:
+        if not do_joint_angles_violate_joint_limits(angles):
+            return angles
+
+    # No valid joint angles found
+    return None
