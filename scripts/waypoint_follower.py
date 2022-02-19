@@ -8,7 +8,10 @@ import numpy as np
 
 from open_manipulator_tenaci.inverse_kinematics import analytical_inverse_kinematics
 from open_manipulator_tenaci.kinematics_common import get_first_valid_joint_angles
-from open_manipulator_tenaci.path_planning import Waypoint
+from open_manipulator_tenaci.path_planning import (
+    Waypoint,
+    compute_waypoints_for_task_2a,
+)
 
 
 def main():
@@ -17,10 +20,16 @@ def main():
 
     # Waypoints (must include 'start_pose')
     current_waypoint = 0
+    # waypoints: List[Waypoint] = [
+    #     start_pose,
+    #     Waypoint(x=-0.148, y=0.0, z=0.079, theta=-np.pi / 2.0, gripper=-0.05),
+    #     Waypoint(x=0.0, y=0.274, z=0.2048, theta=0.0, gripper=-0.05),
+    # ]
+    start_locations = [(-0.15, 0.0), (-0.15, 0.0)]
+    finish_locations = [(-0.05, 0.175), (0.0, 0.2)]
     waypoints: List[Waypoint] = [
         start_pose,
-        Waypoint(x=-0.148, y=0.0, z=0.079, theta=-np.pi / 2.0, gripper=-0.05),
-        Waypoint(x=0.0, y=0.274, z=0.2048, theta=0.0, gripper=-0.05),
+        *compute_waypoints_for_task_2a(start_locations, finish_locations),
     ]
 
     rospy.init_node("waypoint_follower")
@@ -58,6 +67,9 @@ def main():
         # Compute inverse kinematics
         ik_solutions = analytical_inverse_kinematics(waypoint)
         ik_solution = get_first_valid_joint_angles(ik_solutions)
+        if ik_solution is None:
+            print("ERROR: Wapoint can't be reached:", ik_solutions)
+            return
 
         if current_waypoint == 0:
             print("Moving to starting position")
