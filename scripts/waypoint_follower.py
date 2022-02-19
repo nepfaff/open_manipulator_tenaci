@@ -11,6 +11,7 @@ from open_manipulator_tenaci.kinematics_common import get_first_valid_joint_angl
 from open_manipulator_tenaci.path_planning import (
     Waypoint,
     compute_waypoints_for_task_2a,
+    compute_waypoints_for_task_2b,
 )
 
 
@@ -20,16 +21,28 @@ def main():
 
     # Waypoints (must include 'start_pose')
     current_waypoint = 0
+
     # waypoints: List[Waypoint] = [
     #     start_pose,
     #     Waypoint(x=-0.148, y=0.0, z=0.079, theta=-np.pi / 2.0, gripper=-0.05),
     #     Waypoint(x=0.0, y=0.274, z=0.2048, theta=0.0, gripper=-0.05),
     # ]
-    start_locations = [(-0.15, 0.0), (-0.15, 0.0)]
-    finish_locations = [(-0.05, 0.175), (0.0, 0.2)]
+
+    # start_locations = [(-0.15, 0.0), (-0.15, 0.0)]
+    # finish_locations = [(-0.05, 0.175), (0.0, 0.2)]
+    # waypoints: List[Waypoint] = [
+    #     start_pose,
+    #     *compute_waypoints_for_task_2a(start_locations, finish_locations),
+    # ]
+
+    cube_locations = [
+        # (0, 0.21, "front"),
+        # (0, 0.21, "back"),
+        (0, 0.21, "down")
+    ]
     waypoints: List[Waypoint] = [
         start_pose,
-        *compute_waypoints_for_task_2a(start_locations, finish_locations),
+        *compute_waypoints_for_task_2b(cube_locations),
     ]
 
     rospy.init_node("waypoint_follower")
@@ -61,6 +74,10 @@ def main():
         if current_waypoint == len(waypoints):
             print("Final waypoint reached")
             return
+        elif current_waypoint == 0:
+            print("Moving to starting position")
+        else:
+            print(f"Starting waypoint {current_waypoint}")
 
         waypoint = waypoints[current_waypoint]
 
@@ -68,13 +85,8 @@ def main():
         ik_solutions = analytical_inverse_kinematics(waypoint)
         ik_solution = get_first_valid_joint_angles(ik_solutions)
         if ik_solution is None:
-            print("ERROR: Wapoint can't be reached:", ik_solutions)
+            print("ERROR: Waypoint can't be reached:", ik_solutions)
             return
-
-        if current_waypoint == 0:
-            print("Moving to starting position")
-        else:
-            print(f"Starting waypoint {current_waypoint}")
 
         # Publish joint angles to Gazebo topics
         joint1_publisher.publish(ik_solution.joint1_angle)
