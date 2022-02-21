@@ -139,12 +139,6 @@ def waypoints_for_pick_facing_down_place_facing_straight(
         )
     )
 
-    # Bring gripper to save height to prevent touching floor when executing next waypoint
-    # NOTE: Not sure if this always works => Test with all possible cube locations
-    waypoints.append(
-        Waypoint(x_finish, y_finish, 0.25, np.pi / 3.0, GRIPPER_OPENING_CUBE)
-    )
-
     # Rotate gripper and move to finish location
     waypoints.append(
         Waypoint(x_finish, y_finish, gripper_z_above_cube, 0.0, GRIPPER_OPENING_CUBE)
@@ -195,8 +189,9 @@ def waypoints_for_pick_facing_straight_place_facing_down(
     )
 
     # Pick up cube
-    # Big z-position to prevent tuching the floor during rotation
-    waypoints.append(Waypoint(x_start, y_start, 0.2, 0.0, GRIPPER_OPENING_CUBE))
+    waypoints.append(
+        Waypoint(x_start, y_start, GRIPPER_Z_ABOVE_CUBE, 0.0, GRIPPER_OPENING_CUBE)
+    )
 
     # Rotate gripper and move to finish location
     waypoints.append(
