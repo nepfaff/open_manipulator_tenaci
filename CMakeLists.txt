@@ -214,3 +214,6 @@ catkin_install_python(PROGRAMS scripts/static_tool_pose_follower.py
 catkin_install_python(PROGRAMS scripts/waypoint_follower.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
+catkin_install_python(PROGRAMS scripts/waypoint_follower_with_task_space_interpolation.py
+  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)

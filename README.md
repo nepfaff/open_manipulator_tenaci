@@ -34,3 +34,6 @@ Mainly used as a helping tool for developing a low-level MATLAB robotic manipula
   - Publishes joint angles corresponding to a static pose. Uses analytical inverse kinematics. Also prints the corresponding tool pose using forward kinematics. Changing the pose requires modifying the source code.
 - `waypoint_follower.py`
   - Follows a static sequence of waypoints. Changing the waypoints requires changing the source code.
+- `waypoint_follower_with_task_space_interpolation.py`
+  - Follows a static sequence of waypoints by first converting them into set points using cubic task space trajectories. Changing the waypoints requires changing the source code.
+  
