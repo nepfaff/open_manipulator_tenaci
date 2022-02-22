@@ -350,8 +350,6 @@ def compute_waypoints_for_task_2c(
                     y_start,
                     x_start,
                     y_start,
-                    next_gripper_z_pickup_cube,
-                    next_gripper_z_above_cube,
                 )
             )
 
