@@ -37,13 +37,13 @@ def do_joint_angles_violate_joint_limits(joint_angles: JointAngles) -> bool:
     if joint_angles.joint1_angle > np.pi or joint_angles.joint1_angle < -np.pi:
         return True
 
-    if joint_angles.joint2_angle > 1.67 or joint_angles.joint2_angle < -2.05:
+    if joint_angles.joint2_angle > 1.92 or joint_angles.joint2_angle < -2.09:
         return True
 
-    if joint_angles.joint3_angle > 1.53 or joint_angles.joint3_angle < -1.67:
+    if joint_angles.joint3_angle > 1.54 or joint_angles.joint3_angle < -2.07:
         return True
 
-    if joint_angles.joint4_angle > 2.0 or joint_angles.joint4_angle < -1.8:
+    if joint_angles.joint4_angle > 2.15 or joint_angles.joint4_angle < -1.8:
         return True
 
     return False
